@@ -38,6 +38,11 @@ The SSL Certificate:
     * webtask;
     * App Tenant(s) (current *and* future) specific to that particular PSaaS Appliance instance.
 
+The SSL Certificate for the edge doman used in Custom Domains:
+* must be created by a public certificate authority. They cannot be self-signed;
+* must be a wildcard because the hostnames will be created dynamically during the creation of new custom domains.
+
+
 Auth0 accepts the following certificate format:
 
 * PFX/PKCS12

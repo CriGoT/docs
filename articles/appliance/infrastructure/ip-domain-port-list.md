@@ -68,13 +68,13 @@ When possible, instances within a cluster should have full connectivity to each 
     <td>Elastic Search</td>
     <td>Yes</td>
     <td>Required for Elastic Search</td>
-  </tr> 
+  </tr>
    <tr>
     <td>3000</td>
     <td>Grafana instrumentation</td>
     <td>No</td>
     <td>Required if you are using Grafana instrumentation</td>
-  </tr>  
+  </tr>
   <tr>
     <td>22</td>
     <td>Maintenance</td>
@@ -110,7 +110,7 @@ Auth0 strives to keep these IP addresses stable, though this is not a given. Fro
     <td>All</td>
     <td>Inbound</td>
     <td>Your load balancer IP address (often on internal network)</td>
-    <td>80/(443 or 4443)</td>
+    <td>80/(443 or 4443)/1443</td>
     <td>For clusters with more than one node, a load balancer is required for resiliency and performance</td>
     <td>Yes</td>
   </tr>
@@ -155,6 +155,22 @@ Auth0 strives to keep these IP addresses stable, though this is not a given. Fro
     <td>Yes</td>
   </tr>
   <tr>
+    <td>Custom Domains</td>
+    <td>Outbound</td>
+    <td>acme-v02.api.letsencrypt.org</td>
+    <td>443</td>
+    <td>Required to request managed certificates from Let's Encrypt</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
+    <td>Custom Domains</td>
+    <td>Outbound</td>
+    <td>acme-v01.api.letsencrypt.org</td>
+    <td>443</td>
+    <td>Required to request managed certificates from Let's Encrypt</td>
+    <td>Yes</td>
+  </tr>
+  <tr>
     <td>Examples</td>
     <td>Outbound</td>
     <td>github.com</td>
@@ -179,7 +195,7 @@ Auth0 strives to keep these IP addresses stable, though this is not a given. Fro
     <td>No</td>
   </tr>
   <tr>
-    <td>Healthcheck  </td>
+    <td>Healthcheck</td>
     <td>Inbound</td>
     <td>Monitoring Endpoint</td>
     <td>9110</td>

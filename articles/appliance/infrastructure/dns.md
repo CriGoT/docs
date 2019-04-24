@@ -25,6 +25,8 @@ You’ll need one certificate per environment (such as if you have a Dev/Test en
 
 If you’d like to use a [Webtask Dedicated Domain](/appliance/webtasks/dedicated-domains), you’ll need an additional DNS zone and certificate for each environment. If you have a Dev/Test environment and a Prod environment, you’ll need a two total of two certificates per environment.
 
+If you’d like to use a [Custom Domains](/custom-domains), you’ll need an additional DNS zone and certificate for each environment. If you have a Dev/Test environment and a Prod environment, you’ll need a two total of three certificates per environment.
+
 Dedicated and non-dedicated host names must be unique.
 
 ## Sample DNS Naming Scheme
@@ -167,25 +169,61 @@ The Management Dashboard, Configuration Tenant, and App Tenant(s) must all be a 
 
 Three- or four-part domain names are supported (such as manage.project.yourdomain.com).
 
-### Custom Domains
+## Custom Domains
 
-In the PSaaS Appliance, you may map any arbitrary domain name to a tenant using the Custom Domains feature. You may also map multiple custom domains to a single tenant.
+In the PSaaS Appliance, you may map any arbitrary domain name to a tenant using the Custom Domains feature.
 
 Suppose these were your standard domains:
 
 <table class="table">
   <tbody>
     <tr>
-        <td>Root Tenant Authority</td>
         <td>Sample Tenant</td>
         <td>Custom Domain for the Sample Tenant</td>
     </tr>
     <tr>
-        <td>config.example.com</td>
         <td>auth.example.com</td>
         <td>new-name.not-example.com</td>
     </tr>
   </tbody>
 </table>
 
-Please note that all tenant names are derived from the base Configuration Tenant. However, you may set your custom domain to point toward any of your tenants (in the example above, `new-name.not-example.com` maps to `auth.example.com`, and the latter may be used by your applications).
+### Definitions of Terms Used in the DNS Naming Scheme
+
+::: note
+This functionality is available in appliance release [1906](https://auth0.com/releases/1906). If you are running an older version reach to you contact to update your environment.
+:::
+
+* **auth**: the name of your tenant.
+* **example.com**: your organization's domain name.
+* **cname.example.com**: This is the Cname hostname. This is a DNS hostname that will be used to verify custom domains when using Auth0 managed certificates.
+* **edge.example.com**: The edge domain is a DNS zone used to create the endpoints that will be used to give access to custom domain request. This can be a sub zone of the main domain name or a completely different one.
+
+### DNS Configuration requirements
+
+In a standard multi-node cluster deployment
+
+- The Cname hostname ( _cname.example.com_ ) will point to the IP address of the [load balancer in front of the cluster](/appliance/infrastructure/infrastructure-overview).
+- The complete edge domain ( _*.edge.example.com_ ) should be a CNAME DNS record with the target set to Cname hostname ( _cname.example.com_ )
+
+For a single-node PSaaS Appliance instance, the DNS record(s) will point to the IP address of the virtual machine itself (this is often the case for the development/test node).
+
+### Edge domain names
+
+#### Auth0 managed certificates
+
+During the creation of a Custom Domain with Auth0 managed certificates Auth0 will create use a unique hostname in the edge domain, for example: _cd_123456789.edge.example.com_. This hostname will be used to:
+
+- Verify the custom domain ownership by being the target of the CNAME DNS record you create for your custom domain ( _new-name.not-example.com_ ).
+- Serve as the permanent link between your custom domain and the Auth0 infrastructure.
+
+::: note
+THe DNS verification peformed by Auth0 checks that the custom domain is a CNAME record that targets an edge domain host, and that the edge domaint host is a CNAME record that targest the Cname hostname.
+:::
+
+#### Self-managed certificates
+
+During the creation of a Custom Domain with certificatesi managed by you Auth0 will create use a unique hostname in the edge domain, for example: _cd_987654321.edge.example.com_. This hostname will be used to:
+
+- Serve the Auth0 content to your reverse proxy, as long as the right API key is provided.
+

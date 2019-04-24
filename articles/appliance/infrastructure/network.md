@@ -33,7 +33,7 @@ Each PSaaS Appliance virtual machine (VM) must have its own private static IP ad
 For **multi-node** clusters, all virtual machines must be:
 * on the same segment of the internal network;
 * able to communicate between each other via ports `7777`, `27017`, `8721`, and `8701`.
-* able to reach the load balancer via port `443`.
+* able to reach the load balancer via port `443` and `1443` for custom domains.
 
 ::: note
   Production and non-Production (test/development) must be on completely isolated networks.
@@ -57,7 +57,9 @@ DNS records are required for all PSaaS Appliance instances (development/test *an
 * **Management Dashboard**: the Management Dashboard is the web interface that acts as an application for the configuration and application tenants on the PSaaS Appliance;
 * **Root Tenant Authority**: the tenant on the PSaaS Appliance that controls PSaaS Appliance settings, configuration, and local Dashboard Admin users;
 * **webtask**: webtask DNS is used for web extensions and to use Webtasks externally;
-* **App Tenant**: the tenant on the PSaaS Appliance created for your apps. It manages settings for your apps, user profiles, rules, and so on. This is the tenant you will interact with primarily through the Management Dashboard and the API.
+* **App Tenant**: the tenant on the PSaaS Appliance created for your apps. It manages settings for your apps, user profiles, rules, and so on. This is the tenant you will interact with primarily through the Management Dashboard and the API;
+* **Cname hostname**: optional, this is only required if you are using [Custom Domains](/appliance/custom-domains) and it is used to refer all custom domains to you environment;
+* **Edge domains**: optional, this is only required if you are using [Custom Domains](/appliance/custom-domains) and it is used to access individual custom domains for each tenant,
 
 Each additional DNS zone requires an additional certificate. Please refer to the [DNS page](/appliance/infrastructure/dns) for specific requirements.
 
@@ -74,8 +76,15 @@ We recommend a layer 7/application layer load balancer that supports:
 * HTTPS:
     * If your deployment requires geo-location data for users authenticating with Auth0, you must support SSL offloading (or HTTP/1.1 with UPGRADE if you require websockets). It should support both the "Connection: Upgrade" and the "X-Forwarded-For" header. These are required to capture accurate IP address information.
 
+For [Custom Domains](/appliance/custom-domains) you will require an additional layer 4/network load balancer that supports:
+
+* HTTP health monitoring. The [testall](/appliance/monitoring/testall) endpoint is an unauthenticated endpoint that will be used for monitoring by load balancers;
+* TCP/IP:
+    * If your deployment requires geo-location data for users authenticating with Auth0, support for `proxy_protocols` (which append the remote UP address when opening a connection to the backend) will be exposed to the nodes. If `proxy_protocols` is not supported, the IP address information captured for individual logins will always appear as the Load Balancer IP address.
+
+
 ::: note
-  For AWS deployments, you must use TCP/IP.
+  For AWS deployments, you case use an Application Load Balancer and an Elastic Load Balancer.
 :::
 
 ### Software Load Balancers
@@ -90,9 +99,3 @@ You may use NGINX or HA Proxy as a software load balancer in front of the PSaaS 
 :::
 
 In addition to load balancing, you may use this for **IP address whitelisting** and **endpoint filtering** (only authentication endpoints are publicly available).
-
-#### SSL Offloading
-
-The PSaaS Appliance supports the use of SSL offloading at the load balancer if your IT standards require the use of HTTP within the local network. The load balancer must add a `X-Forwarded-Proto` header with the value `https`.
-
-Please note that the use of SSL offloading is not required to achieve high throughput.

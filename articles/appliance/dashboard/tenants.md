@@ -35,10 +35,14 @@ For each associated tenant, you will see the following pieces of information:
 
 The name column of the Tenants page is a hyperlink. Clicking on this brings up the page where you can set up custom domains for this particular tenant, as well overview information for any currently-existing custom domains.
 
+
 ### Adding a Custom Domain
 
-To add a custom domain, click on the "Add Domain" button. You will be prompted for the following information:
+::: warning
+  Staring with PSaaS Appliance release [1906](https://auth0.com/releases/1906) tenant administrators can manage their custom domains. Please refer to the [Custom Domains](/custom-domains) documentation and avoid using this option.
+:::
 
+To add a custom domain, click on the "Add Domain" button. You will be prompted for the following information:
 
 ![](/media/articles/appliance/dashboard/tenant-add-custom-domain.png)
 

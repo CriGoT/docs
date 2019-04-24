@@ -5,7 +5,7 @@ description: How to set up custom domains for your PSaaS Appliance
 topics:
     - appliance
     - custom-domains
-contentType: 
+contentType:
     - index
 useCase: appliance
 applianceId: appliance16
@@ -13,6 +13,10 @@ sitemap: false
 ---
 
 # Private SaaS (PSaaS) Appliance: Custom Domains
+
+::: warning
+PSaaS environments deployed with release [1906](https://auth0.com/releases/1906) or later share the Custom Domains implementation with Auth0 Public Cloud. Refer to the [Custom Domains](/custom-domains) documentation for guidance on how to setup a custom domain
+:::
 
 If you are using **PSaaS Appliance Build 5XXX** or later, you may configure custom domains using the Management Dashboard.
 
@@ -36,6 +40,9 @@ The follow is a list of custom domain features that differ in behavior from thei
 | Token issuer used as custom domain | No |
 | Auth0-managed certificates | No |
 
+!!! warning
+Starting wth PSaaS Appliance release 1906 old customers can migrate their existing custom domain to have all the features available in Auth0 Public Cloud
+!!!
 
 ## Use Example
 
